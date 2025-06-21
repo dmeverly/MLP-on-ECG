@@ -1,9 +1,6 @@
 ## ECG Cardiac Ischemia Prediction Using MLP of Various Levels of Complexity
 
-Author: David Everly
-Date: June 2025
-Submitted as partial requirement for completion of CS 615 - Deep Learning
-Drexel University
+Author: David Everly  
 
 # Description
 Main.py is a script which can run various experiments from command line. Each experiment trains and validates 3 MLPs on a specific dataset contained in the Data directory. Once the model is validated, an image the results is stored in the Images directory, one level above the code directory on the OS.  
