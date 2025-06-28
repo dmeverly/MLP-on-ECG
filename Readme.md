@@ -1,42 +1,139 @@
 ## ECG Cardiac Ischemia Prediction Using MLP of Various Levels of Complexity
 
-Author: David Everly  
+**Author**: David Everly  
+**Language**: Python  
+**Version**: 1 
 
-# Description
+---
+
+# Problem Statement  
+Acute Coronary Syndrome (ACS) demands rapid and accurate identification to improve patient outcomes. ECG interpretation remains a cornerstone of early ACS detection, but standard rule‑based algorithms and clinician review introduce delays and variability. We explore whether purely feed‑forward neural classifiers can reliably distinguish normal from ischemic single‑lead ECG cycles, with the aim of simplifying clinical workflows and reducing diagnostic latency.
+  
+# Description  
 Main.py is a script which can run various experiments from command line. Each experiment trains and validates 3 MLPs on a specific dataset contained in the Data directory. Once the model is validated, an image the results is stored in the Images directory, one level above the code directory on the OS.  
 
-# Language
-Python
+# Purpose
+To systematically evaluate MLP variants on single‑cycle ECG datasets of varying scale, determining trade‑offs between complexity, stability, and predictive performance for ischemia detection.
 
-# Dependencies
-1. framework and Data directory
+## Table of Contents
+- [Installation](#installation)
+- [Usage](#usage)
+- [Features](#features)
+- [Configuration](#configuration)
+- [Results](#results)
+- [Conclusion](#conslusion)
+- [Future Work and Extension](#future-work-and-extension)
+- [References](#references)
+- [Contributing](#contributing)
+- [Licenses](#licenses)
 
-# Execution
+# Installation
+Dependencies:   
+numpy
+pandas
+matplotlib
+wfdb
+argparse
+
+Install using:  
+```bash
+pip install -r requirements.txt  
+```  
+
+# Usage
 Program is intended to be run using Unix-like terminal such as Linux, macOS Terminal (untested), or MINGW64 (Git Bash) on Windows.  
 
 The script recognizes the following commands:  
 
-python main.py [model to run]  
-  
-Models to run:  
+```bash
+python main.py [model]  
+```
+
+Models:  
 ecg200  
 ecg5000  
 ecg5000multiclass  
 mit  
 full  
 
-# References  
+# Features  
+Automatically creates, trains, and validates 3 MLP models on the specified dataset
+- Displays training and validation performance over time
+- Creates confusion matrix
+- Calculates and displays model classification accuracy, sensitivity, and specificity
 
-Al-Zaiti, S. S., Martin-Gill, C., Zègre-Hemsey, J. K., Bouzid, Z., Faramand, Z., Alrawashdeh, M. O., Gregg, R. E., Helman, S., Riek, N. T.,
-Kraevsky-Phillips, K., Clermont, G., Akcakaya, M., Sereika, S. M., Van Dam, P., Smith, S. W., Birnbaum, Y., Saba, S., Sejdic, E., & Callaway,
-C. W. (2023). Machine learning for ECG diagnosis and risk stratification of occlusion myocardial infarction. Nature Medicine, 29(7), 1804–1813. https://doi.org/10.1038/s41591-023-02396-3
-Dau, H. A., Keogh, E., Kamgar, K., Yeh, C.-C. M., Zhu, Y., Gharghabi, S., Ratanamahatana, C. A., et al. (2019). The UCR Time Series Classification
-Archive. University of California, Riverside. https://www.cs.ucr.edu/~eamonn/time_series_data_2018/
-Goldberger, A. L., Amaral, L. A. N., Glass, L., Hausdorff, J. M., Ivanov, P. C., Mark, R. G., Mietus, J. E., Moody, G. B., Peng, C.-K., & Stanley, H. E.
-(2000). PhysioBank, PhysioToolkit, and PhysioNet: Components of a new research resource for complex physiologic signals. *Circulation*,
-101(23), e215–e220. https://doi.org/10.1161/01.CIR.101.23.e215
-Institute of Medicine (Ed.). (2000). To err is human: Building a safer health system. National Academies Press. http://www.nap.edu/catalog/9728
-Institute of Medicine (Ed.). (2009). Crossing the quality chasm: A new health system for the 21st century (9. print). National Acad. Press.
-Moody, G.B., & Mark, R.G. (2001). The impact of the MIT-BIH Arrhythmia Database. IEEE Engineering in Medicine and Biology Magazine, 20(3), 45–50. doi:10.1109/51.932724
-Xiong, P., Lee, S. M.-Y., & Chan, G. (2022). Deep Learning for Detecting and Locating Myocardial Infarction by Electrocardiogram: A
-Literature Review. Frontiers in Cardiovascular Medicine, 9, 860032. https://doi.org/10.3389/fcvm.2022.860032
+# Configuration  
+
+## Data Sources
+- **ECG200:** 200 one‑cycle tracings, normal vs. ischemic.  
+- **ECG5000:** 5000 one‑cycle tracings, normal vs. abnormal (binary and multiclass subsets).
+- **MIT-BIH:** 47 two-lead tracings over 30 minutes, normal vs. ischemia
+- **Full ECG:** Al-Zaiti et al. dataset, 12-lead tracings 
+
+*Note: MIT‑BIH and 12‑lead “Full ECG” data demonstrate poor convergence*
+
+## Pre‑processing
+- Z‑score normalization per cycle  
+- 80/20 stratified train/validation split  
+
+## Architectures
+1. **Shallow MLP (5 layers):**
+   - Input → Dense(64) → Tanh → Dense(32) → Tanh → Sigmoid
+
+2. **Deep MLP (22 layers):**
+   - 9× [Dense(32) → Tanh] → Dense(16) → Sigmoid
+
+3. **Residual MLP (22 layers + shortcuts):**
+   - Blocks of [Dense(32) → Tanh → BatchNorm] with identity shortcuts and funnel‑shaped sizes
+
+## Training & Tuning
+- **Optimizer:** Adam (learning rates swept over {1e‑3, 1e‑4, 1e‑5})  
+- **Hidden sizes:** {8, 16, 32, 64} via grid search  
+- Early stopping (patience = 10 epochs)
+
+## Initialization
+Xavier uniform for weights; biases initialized to zero.
+
+# Results  
+
+| Dataset     | Metric          | Shallow | Deep | Residual |
+|-------------|-----------------|---------|------|----------|
+| **ECG200**  | Accuracy        | 86 %    | 81 % | **91 %** |
+| **ECG5000** | Binary Accuracy | 98 %    | 98 % | **98 %** |
+| **ECG5000** | Multiclass Acc. | 92 %    | 95 % | **95 %** |
+
+- **ECG200:** Residual MLP led (91 %), showing depth+shortcuts help on small/noisy samples.  
+- **ECG5000:** All reached ∼98 % binary accuracy; deeper models improved multiclass by 3 %.
+
+[ECG200 Shallow](/FinalModels/mlp200/best%20model/mlp200_shallow_with_eta_0_0001_and_hidden_32.png)
+[ECG200 Deep](/FinalModels/mlp200/best%20model/mlp200_with_eta_0_0001_and_hidden_32.png)
+[ECG200 with Skip Residuals](/FinalModels/mlp200/best%20model/mlp200_skip_with_eta_0_0001_and_hidden_32.png)
+[ECG200 with Skip Residuals Confusion Matrix](/FinalModels/mlp200/confusion_matrix_mlp200_skip_with_eta_0_0001_and_hidden_32_confusion.png)
+[ECG5000 Shallow](/FinalModels/mlp5000/Best/mlp5000_shallow_with_eta_0_0001_and_hidden_32.png)
+[ECG5000 Deep](/FinalModels/mlp5000/mlp5000_with_eta_0_0001_and_hidden_32.png)
+[ECG5000 with Skip Residuals](/FinalModels/mlp5000/Best/mlp5000_skip_with_eta_0_0001_and_hidden_32.png)
+[ECG5000 with Skip Residuals Confusion Matrix](/FinalModels/mlp5000/Best/confusion_matrix_mlp5000_skip_with_eta_0_0001_and_hidden_32_confusion.png)
+
+# Conclusion
+Residual connections significantly boost MLP performance on small, noisy ECG cycles. For large datasets, shallow networks suffice for binary tasks, but deep/residual models yield multiclass gains. Pure MLPs struggle with multi‑lead or long sequences, suggesting CNNs or Transformers for richer ECG representations.
+
+# Future Work and Extension  
+- Evaluate CNNs and Transformers on single‑cycle and full‑lead ECGs  
+- Incorporate RNNs or attention mechanisms for multi‑beat/continuous monitoring  
+- Conduct prospective clinical validation against cardiologist readings  
+
+# References  
+1. Al‑Zaiti et al., 2023. Machine learning for ECG diagnosis and risk stratification… _Nature Medicine_.  
+2. Dau et al., 2019. The UCR Time Series Classification Archive. UCR.  
+3. Goldberger et al., 2000. PhysioBank, PhysioToolkit, and PhysioNet. _Circulation_.  
+4. Institute of Medicine, 2000. _To err is human: Building a safer health system_.  
+5. Moody & Mark, 2001. The impact of the MIT‑BIH Arrhythmia Database. _IEEE EMBS Mag_.  
+6. Xiong et al., 2022. Deep Learning for Detecting and Locating Myocardial Infarction… _Frontiers in Cardiovascular Medicine_.  
+
+# Contributing  
+No external parties contibuted to this project.  
+
+# Licenses  
+None
+
+<a href="https://www.dmeverly.com/completedprojects/cardiac-ischemia/" style="display: block; text-align:right;" target = "_blank">  Project Overview -> </a>  
