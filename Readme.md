@@ -105,14 +105,20 @@ Xavier uniform for weights; biases initialized to zero.
 - **ECG200:** Residual MLP led (91 %), showing depth+shortcuts help on small/noisy samples.  
 - **ECG5000:** All reached ∼98 % binary accuracy; deeper models improved multiclass by 3 %.
 
-![ECG200 Shallow](/FinalModels/mlp200/best%20model/mlp200_shallow_with_eta_0_0001_and_hidden_32.png)
-![ECG200 Deep](/FinalModels/mlp200/best%20model/mlp200_with_eta_0_0001_and_hidden_32.png)
-![ECG200 with Skip Residuals](/FinalModels/mlp200/best%20model/mlp200_skip_with_eta_0_0001_and_hidden_32.png)
-![ECG200 with Skip Residuals Confusion Matrix](/FinalModels/mlp200/best%20model/confusion_matrix_mlp200_skip_with_eta_0_0001_and_hidden_32_confusion.png)
-![ECG5000 Shallow](/FinalModels/mlp5000/Best/mlp5000_shallow_with_eta_0_0001_and_hidden_32.png)
-![ECG5000 Deep](/FinalModels/mlp5000/mlp5000_with_eta_0_0001_and_hidden_32.png)
-![ECG5000 with Skip Residuals](/FinalModels/mlp5000/Best/mlp5000_skip_with_eta_0_0001_and_hidden_32.png)
-![ECG5000 with Skip Residuals Confusion Matrix](/FinalModels/mlp5000/Best/confusion_matrix_mlp5000_skip_with_eta_0_0001_and_hidden_32_confusion.png)
+### ECG200 Results
+
+| Shallow Model | Shallow CM | Deep Model | Deep CM |
+|:-------------:|:----------:|:----------:|:-------:|
+| [![Shallow](/FinalModels/mlp200/best%20model/mlp200_shallow_with_eta_0_0001_and_hidden_32.png)](/FinalModels/mlp200/best%20model/mlp200_shallow_with_eta_0_0001_and_hidden_32.png) | [![Shallow CM](/FinalModels/mlp200/best%20model/confusion_matrix_mlp200_shallow_with_eta_0_0001_and_hidden_32_confusion.png)](/FinalModels/mlp200/best%20model/confusion_matrix_mlp200_shallow_with_eta_0_0001_and_hidden_32_confusion.png) | [![Deep](/FinalModels/mlp200/best%20model/mlp200_with_eta_0_0001_and_hidden_32.png)](/FinalModels/mlp200/best%20model/mlp200_with_eta_0_0001_and_hidden_32.png) | [![Deep CM](/FinalModels/mlp200/best%20model/confusion_matrix_mlp200_with_eta_0_0001_and_hidden_32_confusion.png)](/FinalModels/mlp200/best%20model/confusion_matrix_mlp200_with_eta_0_0001_and_hidden_32_confusion.png) |
+
+| Deep + Skip | Deep+Skip CM | 5000 Shallow | 5000 Shallow CM |
+|:-----------:|:------------:|:------------:|:---------------:|
+| [![Skip](/FinalModels/mlp200/best%20model/mlp200_skip_with_eta_0_0001_and_hidden_32.png)](/FinalModels/mlp200/best%20model/mlp200_skip_with_eta_0_0001_and_hidden_32.png) | [![Skip CM](/FinalModels/mlp200/best%20model/confusion_matrix_mlp200_skip_with_eta_0_0001_and_hidden_32_confusion.png)](/FinalModels/mlp200/best%20model/confusion_matrix_mlp200_skip_with_eta_0_0001_and_hidden_32_confusion.png) | [![5000 Shallow](/FinalModels/mlp5000/Best/mlp5000_shallow_with_eta_0_0001_and_hidden_32.png)](/FinalModels/mlp5000/Best/mlp5000_shallow_with_eta_0_0001_and_hidden_32.png) | [![5000 Shallow CM](/FinalModels/mlp5000/Best/confusion_matrix_mlp5000_shallow_with_eta_0_0001_and_hidden_32_confusion.png)](/FinalModels/mlp5000/Best/confusion_matrix_mlp5000_shallow_with_eta_0_0001_and_hidden_32_confusion.png) |
+
+| 5000 Deep | 5000 Deep CM | 5000 Skip | 5000 Skip CM |
+|:---------:|:------------:|:---------:|:-----------:|
+| [![5000 Deep](/FinalModels/mlp5000/mlp5000_with_eta_0_0001_and_hidden_32.png)](/FinalModels/mlp5000/mlp5000_with_eta_0_0001_and_hidden_32.png) | [![5000 Deep CM](/FinalModels/mlp5000/Best/confusion_matrix_mlp5000_with_eta_0_0001_and_hidden_32_confusion.png)](/FinalModels/mlp5000/Best/confusion_matrix_mlp5000_with_eta_0_0001_and_hidden_32_confusion.png) | [![5000 Skip](/FinalModels/mlp5000/Best/mlp5000_skip_with_eta_0_0001_and_hidden_32.png)](/FinalModels/mlp5000/Best/mlp5000_skip_with_eta_0_0001_and_hidden_32.png) | [![5000 Skip CM](/FinalModels/mlp5000/Best/confusion_matrix_mlp5000_skip_with_eta_0_0001_and_hidden_32_confusion.png)](/FinalModels/mlp5000/Best/confusion_matrix_mlp5000_skip_with_eta_0_0001_and_hidden_32_confusion.png) |
+
 
 # Conclusion
 Residual connections significantly boost MLP performance on small, noisy ECG cycles. For large datasets, shallow networks suffice for binary tasks, but deep/residual models yield multiclass gains. Pure MLPs struggle with multi‑lead or long sequences, suggesting CNNs or Transformers for richer ECG representations.
