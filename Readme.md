@@ -108,7 +108,7 @@ Xavier uniform for weights; biases initialized to zero.
 ![ECG200 Shallow](/FinalModels/mlp200/best%20model/mlp200_shallow_with_eta_0_0001_and_hidden_32.png)
 ![ECG200 Deep](/FinalModels/mlp200/best%20model/mlp200_with_eta_0_0001_and_hidden_32.png)
 ![ECG200 with Skip Residuals](/FinalModels/mlp200/best%20model/mlp200_skip_with_eta_0_0001_and_hidden_32.png)
-![ECG200 with Skip Residuals Confusion Matrix](/FinalModels/mlp200/confusion_matrix_mlp200_skip_with_eta_0_0001_and_hidden_32_confusion.png)
+![ECG200 with Skip Residuals Confusion Matrix](/FinalModels/mlp200/best%20model/confusion_matrix_mlp200_skip_with_eta_0_0001_and_hidden_32_confusion.png)
 ![ECG5000 Shallow](/FinalModels/mlp5000/Best/mlp5000_shallow_with_eta_0_0001_and_hidden_32.png)
 ![ECG5000 Deep](/FinalModels/mlp5000/mlp5000_with_eta_0_0001_and_hidden_32.png)
 ![ECG5000 with Skip Residuals](/FinalModels/mlp5000/Best/mlp5000_skip_with_eta_0_0001_and_hidden_32.png)
