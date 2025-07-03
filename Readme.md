@@ -1,19 +1,14 @@
-## ECG Cardiac Ischemia Prediction Using MLP of Various Levels of Complexity
+# ECG Cardiac Ischemia Prediction Using MLP of Various Levels of Complexity
 
 **Author**: David Everly  
 **Language**: Python  
 **Version**: 1 
 
+### <a href="https://www.dmeverly.com/completedprojects/cardiac-ischemia/" style="display: block; text-align:right;" target = "_blank">  Project Overview -> </a>  
 ---
-
-# Problem Statement  
-Acute Coronary Syndrome (ACS) demands rapid and accurate identification to improve patient outcomes. ECG interpretation remains a cornerstone of early ACS detection, but standard rule‑based algorithms and clinician review introduce delays and variability. We explore whether purely feed‑forward neural classifiers can reliably distinguish normal from ischemic single‑lead ECG cycles, with the aim of simplifying clinical workflows and reducing diagnostic latency.
   
-# Description  
+## Description  
 Main.py is a script which can run various experiments from command line. Each experiment trains and validates 3 MLPs on a specific dataset contained in the Data directory. Once the model is validated, an image the results is stored in the Images directory, one level above the code directory on the OS.  
-
-# Purpose
-To systematically evaluate MLP variants on single‑cycle ECG datasets of varying scale, determining trade‑offs between complexity, stability, and predictive performance for ischemia detection.
 
 ## Table of Contents
 - [Installation](#installation)
@@ -27,7 +22,7 @@ To systematically evaluate MLP variants on single‑cycle ECG datasets of varyin
 - [Contributing](#contributing)
 - [Licenses](#licenses)
 
-# Installation
+## Installation
 Dependencies:   
 numpy
 pandas
@@ -40,7 +35,7 @@ Install using:
 pip install -r requirements.txt  
 ```  
 
-# Usage
+## Usage
 Program is intended to be run using Unix-like terminal such as Linux, macOS Terminal (untested), or MINGW64 (Git Bash) on Windows.  
 
 The script recognizes the following commands:  
@@ -56,15 +51,15 @@ ecg5000multiclass
 mit  
 full  
 
-# Features  
+## Features  
 Automatically creates, trains, and validates 3 MLP models on the specified dataset
 - Displays training and validation performance over time
 - Creates confusion matrix
 - Calculates and displays model classification accuracy, sensitivity, and specificity
 
-# Configuration  
+## Configuration  
 
-## Data Sources
+### Data Sources
 - **ECG200:** 200 one‑cycle tracings, normal vs. ischemic.  
 - **ECG5000:** 5000 one‑cycle tracings, normal vs. abnormal (binary and multiclass subsets).
 - **MIT-BIH:** 47 two-lead tracings over 30 minutes, normal vs. ischemia
@@ -72,11 +67,11 @@ Automatically creates, trains, and validates 3 MLP models on the specified datas
 
 *Note: MIT‑BIH and 12‑lead “Full ECG” data demonstrate poor convergence*
 
-## Pre‑processing
+### Pre‑processing
 - Z‑score normalization per cycle  
 - 80/20 stratified train/validation split  
 
-## Architectures
+### Architectures
 1. **Shallow MLP (5 layers):**
    - Input → Dense(64) → Tanh → Dense(32) → Tanh → Sigmoid
 
@@ -86,15 +81,15 @@ Automatically creates, trains, and validates 3 MLP models on the specified datas
 3. **Residual MLP (22 layers + shortcuts):**
    - Blocks of [Dense(32) → Tanh → BatchNorm] with identity shortcuts and funnel‑shaped sizes
 
-## Training & Tuning
+### Training & Tuning
 - **Optimizer:** Adam (learning rates swept over {1e‑3, 1e‑4, 1e‑5})  
 - **Hidden sizes:** {8, 16, 32, 64} via grid search  
 - Early stopping (patience = 10 epochs)
 
-## Initialization
+### Initialization
 Xavier uniform for weights; biases initialized to zero.
 
-# Results  
+## Results  
 
 | Dataset     | Metric          | Shallow | Deep | Residual |
 |-------------|-----------------|---------|------|----------|
@@ -120,15 +115,15 @@ Xavier uniform for weights; biases initialized to zero.
 | [![5000 Deep](/FinalModels/mlp5000/mlp5000_with_eta_0_0001_and_hidden_32.png)](/FinalModels/mlp5000/mlp5000_with_eta_0_0001_and_hidden_32.png) | [![5000 Deep CM](/FinalModels/mlp5000/Best/confusion_matrix_mlp5000_with_eta_0_0001_and_hidden_32_confusion.png)](/FinalModels/mlp5000/Best/confusion_matrix_mlp5000_with_eta_0_0001_and_hidden_32_confusion.png) | [![5000 Skip](/FinalModels/mlp5000/Best/mlp5000_skip_with_eta_0_0001_and_hidden_32.png)](/FinalModels/mlp5000/Best/mlp5000_skip_with_eta_0_0001_and_hidden_32.png) | [![5000 Skip CM](/FinalModels/mlp5000/Best/confusion_matrix_mlp5000_skip_with_eta_0_0001_and_hidden_32_confusion.png)](/FinalModels/mlp5000/Best/confusion_matrix_mlp5000_skip_with_eta_0_0001_and_hidden_32_confusion.png) |
 
 
-# Conclusion
+## Conclusion
 Residual connections significantly boost MLP performance on small, noisy ECG cycles. For large datasets, shallow networks suffice for binary tasks, but deep/residual models yield multiclass gains. Pure MLPs struggle with multi‑lead or long sequences, suggesting CNNs or Transformers for richer ECG representations.
 
-# Future Work and Extension  
+## Future Work and Extension  
 - Evaluate CNNs and Transformers on single‑cycle and full‑lead ECGs  
 - Incorporate RNNs or attention mechanisms for multi‑beat/continuous monitoring  
 - Conduct prospective clinical validation against cardiologist readings  
 
-# References  
+## References  
 1. Al‑Zaiti et al., 2023. Machine learning for ECG diagnosis and risk stratification… _Nature Medicine_.  
 2. Dau et al., 2019. The UCR Time Series Classification Archive. UCR.  
 3. Goldberger et al., 2000. PhysioBank, PhysioToolkit, and PhysioNet. _Circulation_.  
@@ -136,10 +131,8 @@ Residual connections significantly boost MLP performance on small, noisy ECG cyc
 5. Moody & Mark, 2001. The impact of the MIT‑BIH Arrhythmia Database. _IEEE EMBS Mag_.  
 6. Xiong et al., 2022. Deep Learning for Detecting and Locating Myocardial Infarction… _Frontiers in Cardiovascular Medicine_.  
 
-# Contributing  
+## Contributing  
 No external parties contributed to this project.  
 
-# Licenses  
+## Licenses  
 None
-
-<a href="https://www.dmeverly.com/completedprojects/cardiac-ischemia/" style="display: block; text-align:right;" target = "_blank">  Project Overview -> </a>  
