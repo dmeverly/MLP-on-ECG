@@ -1,143 +1,96 @@
-# ECG Cardiac Ischemia Prediction Using MLP of Various Levels of Complexity
+# ECG Ischemia Prediction (MLP Study)
 
 **Author**: David Everly  
 **Language**: Python  
-**Version**: 1 
+**Domain**: Clinical Signal Analysis / Applied Machine Learning  
+**Status**: Exploratory
 
-### <a href="https://www.dmeverly.com/completedprojects/cardiac-ischemia/" style="display: block; text-align:right;" target = "_blank">  Project Overview -> </a>  
 ---
-  
-## Description  
-Main.py is a script which can run various experiments from command line. Each experiment trains and validates 3 MLPs on a specific dataset contained in the Data directory. Once the model is validated, an image the results is stored in the Images directory, one level above the code directory on the OS.  
 
-## Table of Contents
-- [Installation](#installation)
-- [Usage](#usage)
-- [Features](#features)
-- [Configuration](#configuration)
-- [Results](#results)
-- [Conclusion](#conslusion)
-- [Future Work and Extension](#future-work-and-extension)
-- [References](#references)
-- [Contributing](#contributing)
-- [Licenses](#licenses)
+## Description
 
-## Installation
-Dependencies:   
-numpy
-pandas
-matplotlib
-wfdb
-argparse
+This project explores the effectiveness and limitations of multilayer perceptron (MLP) architectures for ECG-based ischemia classification across datasets of increasing clinical complexity.
 
-Install using:  
-```bash
-pip install -r requirements.txt  
-```  
+Rather than aiming for state-of-the-art performance, the goal is to understand **where and why simpler feedforward models break down** when applied to richer, noisier clinical signals. The findings from this work informed later architectural choices, including the transition to convolutional models for waveform analysis.
 
-## Usage
-Program is intended to be run using Unix-like terminal such as Linux, macOS Terminal (untested), or MINGW64 (Git Bash) on Windows.  
+---
 
-The script recognizes the following commands:  
+## Scope and Intent
 
-```bash
-python main.py [model]  
-```
+This project is intentionally exploratory.
 
-Models:  
-ecg200  
-ecg5000  
-ecg5000multiclass  
-mit  
-full  
+It focuses on:
+- empirical comparison of MLP depth and structure
+- convergence behavior across datasets
+- identifying architectural mismatch between model class and signal complexity
 
-## Features  
-Automatically creates, trains, and validates 3 MLP models on the specified dataset
-- Displays training and validation performance over time
-- Creates confusion matrix
-- Calculates and displays model classification accuracy, sensitivity, and specificity
+It does **not** attempt:
+- clinical deployment
+- production-grade performance
+- model interpretability beyond basic analysis
 
-## Configuration  
+---
 
-### Data Sources
-- **ECG200:** 200 one‑cycle tracings, normal vs. ischemic.  
-- **ECG5000:** 5000 one‑cycle tracings, normal vs. abnormal (binary and multiclass subsets).
-- **MIT-BIH:** 47 two-lead tracings over 30 minutes, normal vs. ischemia
-- **Full ECG:** Al-Zaiti et al. dataset, 12-lead tracings 
+## System Characteristics
 
-*Note: MIT‑BIH and 12‑lead “Full ECG” data demonstrate poor convergence*
+- **Model Families**  
+  Evaluates shallow, deep, and residual MLP architectures.
 
-### Pre‑processing
-- Z‑score normalization per cycle  
-- 80/20 stratified train/validation split  
+- **Datasets**  
+  Experiments conducted across multiple ECG datasets, including:
+  - ECG200
+  - ECG5000
+  - MIT-BIH–derived data
+  - higher-dimensional ECG representations
 
-### Architectures
-1. **Shallow MLP (5 layers):**
-   - Input → Dense(64) → Tanh → Dense(32) → Tanh → Sigmoid
+- **Training Discipline**  
+  Includes early stopping, hyperparameter sweeps, and repeated trials to assess convergence stability.
 
-2. **Deep MLP (22 layers):**
-   - 9× [Dense(32) → Tanh] → Dense(16) → Sigmoid
+- **Evaluation Metrics**  
+  Accuracy, sensitivity, specificity, and confusion matrices are reported to understand class-level behavior.
 
-3. **Residual MLP (22 layers + shortcuts):**
-   - Blocks of [Dense(32) → Tanh → BatchNorm] with identity shortcuts and funnel‑shaped sizes
+---
 
-### Training & Tuning
-- **Optimizer:** Adam (learning rates swept over {1e‑3, 1e‑4, 1e‑5})  
-- **Hidden sizes:** {8, 16, 32, 64} via grid search  
-- Early stopping (patience = 10 epochs)
+## Key Findings
 
-### Initialization
-Xavier uniform for weights; biases initialized to zero.
+- MLPs can perform adequately on simplified or low-dimensional ECG datasets.
+- As signal richness and dataset complexity increase, MLPs exhibit:
+  - unstable convergence
+  - poor generalization
+  - sensitivity to hyperparameter tuning
+- Architectural expressiveness, rather than training duration, becomes the limiting factor.
 
-## Results  
+These results motivated the transition to convolutional architectures in subsequent projects.
 
-| Dataset     | Metric          | Shallow | Deep | Residual |
-|-------------|-----------------|---------|------|----------|
-| **ECG200**  | Accuracy        | 86 %    | 81 % | **91 %** |
-| **ECG5000** | Binary Accuracy | 98 %    | 98 % | **98 %** |
-| **ECG5000** | Multiclass Acc. | 92 %    | 95 % | **95 %** |
+---
 
-- **ECG200:** Residual MLP led (91 %), showing depth+shortcuts help on small/noisy samples.  
-- **ECG5000:** All reached ∼98 % binary accuracy; deeper models improved multiclass by 3 %.
+## What This Project Demonstrates
 
-### ECG200 Results
+- Empirical evaluation of model–data mismatch  
+- Willingness to conclude when an approach is insufficient  
+- Methodical experimentation across datasets and architectures  
+- Judgment in evolving system design based on observed failure modes
 
-| Shallow Model | Shallow CM | Deep Model | Deep CM |
-|:-------------:|:----------:|:----------:|:-------:|
-| [![Shallow](/FinalModels/mlp200/best%20model/mlp200_shallow_with_eta_0_0001_and_hidden_32.png)](/FinalModels/mlp200/best%20model/mlp200_shallow_with_eta_0_0001_and_hidden_32.png) | [![Shallow CM](/FinalModels/mlp200/best%20model/confusion_matrix_mlp200_shallow_with_eta_0_0001_and_hidden_32_confusion.png)](/FinalModels/mlp200/best%20model/confusion_matrix_mlp200_shallow_with_eta_0_0001_and_hidden_32_confusion.png) | [![Deep](/FinalModels/mlp200/best%20model/mlp200_with_eta_0_0001_and_hidden_32.png)](/FinalModels/mlp200/best%20model/mlp200_with_eta_0_0001_and_hidden_32.png) | [![Deep CM](/FinalModels/mlp200/best%20model/confusion_matrix_mlp200_with_eta_0_0001_and_hidden_32_confusion.png)](/FinalModels/mlp200/best%20model/confusion_matrix_mlp200_with_eta_0_0001_and_hidden_32_confusion.png) |
+---
 
-| Deep + Skip | Deep+Skip CM | 5000 Shallow | 5000 Shallow CM |
-|:-----------:|:------------:|:------------:|:---------------:|
-| [![Skip](/FinalModels/mlp200/best%20model/mlp200_skip_with_eta_0_0001_and_hidden_32.png)](/FinalModels/mlp200/best%20model/mlp200_skip_with_eta_0_0001_and_hidden_32.png) | [![Skip CM](/FinalModels/mlp200/best%20model/confusion_matrix_mlp200_skip_with_eta_0_0001_and_hidden_32_confusion.png)](/FinalModels/mlp200/best%20model/confusion_matrix_mlp200_skip_with_eta_0_0001_and_hidden_32_confusion.png) | [![5000 Shallow](/FinalModels/mlp5000/Best/mlp5000_shallow_with_eta_0_0001_and_hidden_32.png)](/FinalModels/mlp5000/Best/mlp5000_shallow_with_eta_0_0001_and_hidden_32.png) | [![5000 Shallow CM](/FinalModels/mlp5000/Best/confusion_matrix_mlp5000_shallow_with_eta_0_0001_and_hidden_32_confusion.png)](/FinalModels/mlp5000/Best/confusion_matrix_mlp5000_shallow_with_eta_0_0001_and_hidden_32_confusion.png) |
+## Limitations and Non-Goals
 
-| 5000 Deep | 5000 Deep CM | 5000 Skip | 5000 Skip CM |
-|:---------:|:------------:|:---------:|:-----------:|
-| [![5000 Deep](/FinalModels/mlp5000/mlp5000_with_eta_0_0001_and_hidden_32.png)](/FinalModels/mlp5000/mlp5000_with_eta_0_0001_and_hidden_32.png) | [![5000 Deep CM](/FinalModels/mlp5000/Best/confusion_matrix_mlp5000_with_eta_0_0001_and_hidden_32_confusion.png)](/FinalModels/mlp5000/Best/confusion_matrix_mlp5000_with_eta_0_0001_and_hidden_32_confusion.png) | [![5000 Skip](/FinalModels/mlp5000/Best/mlp5000_skip_with_eta_0_0001_and_hidden_32.png)](/FinalModels/mlp5000/Best/mlp5000_skip_with_eta_0_0001_and_hidden_32.png) | [![5000 Skip CM](/FinalModels/mlp5000/Best/confusion_matrix_mlp5000_skip_with_eta_0_0001_and_hidden_32_confusion.png)](/FinalModels/mlp5000/Best/confusion_matrix_mlp5000_skip_with_eta_0_0001_and_hidden_32_confusion.png) |
+- This project does not include interpretability tooling such as saliency analysis
+- No attempt is made to handle real-time or streaming ECG data
+- Results are dataset-specific and not clinically validated
 
+---
 
-## Conclusion
-Residual connections significantly boost MLP performance on small, noisy ECG cycles. For large datasets, shallow networks suffice for binary tasks, but deep/residual models yield multiclass gains. Pure MLPs struggle with multi‑lead or long sequences, suggesting CNNs or Transformers for richer ECG representations.
+## Relationship to Other Projects
 
-## Future Work and Extension  
-- Evaluate CNNs and Transformers on single‑cycle and full‑lead ECGs  
-- Incorporate RNNs or attention mechanisms for multi‑beat/continuous monitoring  
-- Conduct prospective clinical validation against cardiologist readings  
+This work directly informed later projects, including:
 
-## References  
-1. Al‑Zaiti et al., 2023. Machine learning for ECG diagnosis and risk stratification… _Nature Medicine_.  
-2. Dau et al., 2019. The UCR Time Series Classification Archive. UCR.  
-3. Goldberger et al., 2000. PhysioBank, PhysioToolkit, and PhysioNet. _Circulation_.  
-4. Institute of Medicine, 2000. _To err is human: Building a safer health system_.  
-5. Moody & Mark, 2001. The impact of the MIT‑BIH Arrhythmia Database. _IEEE EMBS Mag_.  
-6. Xiong et al., 2022. Deep Learning for Detecting and Locating Myocardial Infarction… _Frontiers in Cardiovascular Medicine_.  
+- **CNN Cardiac Rhythm Classification**, which applies convolutional architectures better suited to temporal signal structure and interpretability.
 
-## Contributing  
-No external parties contributed to this project.  
+---
 
-## Licenses  
-None
+## Disclaimer
 
-## Disclaimer  
-This project was developed independently on personal time and is not affiliated with or endorsed by any employer or healthcare organization.  
-All data used is publicly available and non-identifiable.  
-All opinions and methods reflect personal research and experimentation.
+This project was developed independently on personal time and is not affiliated with or endorsed by any employer.  
+All data used is publicly available.  
+This work reflects exploratory experimentation rather than deployable clinical systems.
